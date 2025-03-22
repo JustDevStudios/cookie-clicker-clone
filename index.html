@@ -1,1 +1,1277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Clicker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Contenedor de efectos activos -->
+        <div id="active-effects"></div>
+        
+        <!-- Sección de la galleta (izquierda) -->
+        <div class="cookie-section">
+            <div class="bakery-info">
+                <h1 id="bakery-name" class="bakery-name">La confitería de <span id="player-name">aleko</span></h1>
+                <div class="stats-section">
+                    <div id="cookie-counter">0 galletas</div>
+                    <div class="stats-row">
+                        <span>Por segundo:</span>
+                        <span id="cps">0</span>
+                    </div>
+                    <div class="stats-row">
+                        <span>Por click:</span>
+                        <span id="cpc">1</span>
+                    </div>
+                    <div id="ascension-info" class="stats-section">
+                        <!-- La información de prestigio se insertará aquí -->
+                    </div>
+                    <button id="ascend-btn" onclick="ascend()" class="special-btn">
+                        Ascender
+                        <div class="tooltip">
+                            Asciende para obtener chips celestiales que aumentarán permanentemente tu producción de galletas.
+                            Necesitas al menos 1 billón de galletas para ascender.
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <div id="cookie" class="cookie">🍪</div>
+        </div>
 
+        <!-- Sección principal (medio) -->
+        <div class="main-section">
+            <div class="top-bar">
+                <div class="nav-buttons">
+                    <button class="nav-btn" id="options-btn">Opciones</button>
+                    <button class="nav-btn" id="stats-btn">Estadísticas</button>
+                    <button class="nav-btn" id="info-btn">Info</button>
+                    <button class="nav-btn" id="legacy-btn">Legado</button>
+                </div>
+                <div id="news-ticker" class="news-ticker">
+                    <span>Noticias: Según un científico, las granjas de galletas liberan chocolates que afectan a nuestros ríos.</span>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <!-- Menú de opciones -->
+                <div id="options-menu" class="menu-panel hidden">
+                    <div class="menu-header">
+                        <h2>Opciones</h2>
+                        <button class="close-btn">×</button>
+                    </div>
+                    <div class="menu-content">
+                        <div class="option-group">
+                            <h3>Guardado</h3>
+                            <button class="option-btn" id="save-btn">
+                                <span class="option-icon">💾</span>
+                                Guardar juego
+                            </button>
+                            <button class="option-btn" id="export-btn">
+                                <span class="option-icon">📤</span>
+                                Exportar guardado
+                            </button>
+                            <button class="option-btn" id="import-btn">
+                                <span class="option-icon">📥</span>
+                                Importar guardado
+                            </button>
+                            <button class="option-btn warning" id="wipe-btn">
+                                <span class="option-icon">🗑️</span>
+                                Borrar guardado
+                            </button>
+                        </div>
+                        <div class="option-group">
+                            <h3>Preferencias</h3>
+                            <div class="option-row">
+                                <label>Tema:</label>
+                                <select id="theme-select" class="option-select">
+                                    <option value="default">Por defecto</option>
+                                    <option value="dark">Oscuro</option>
+                                    <option value="light">Claro</option>
+                                </select>
+                            </div>
+                            <div class="option-row">
+                                <label>Números cortos:</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="short-numbers">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="option-row">
+                                <label>Sonidos:</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="sound-enabled" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="option-row">
+                                <label>Partículas:</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="particles-enabled" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Menú de estadísticas -->
+                <div id="stats-menu" class="menu-panel hidden">
+                    <div class="menu-header">
+                        <h2>Estadísticas</h2>
+                        <button class="close-btn">×</button>
+                    </div>
+                    <div class="menu-content">
+                        <div class="stats-group">
+                            <h3>General</h3>
+                            <div class="stat-row">
+                                <span class="stat-label">Galletas totales:</span>
+                                <span id="total-cookies-stat" class="stat-value">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Tiempo jugado:</span>
+                                <span id="time-played-stat" class="stat-value">0:00:00</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Inicio del juego:</span>
+                                <span id="start-date-stat" class="stat-value">-</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Clicks totales:</span>
+                                <span id="total-clicks-stat" class="stat-value">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Galletas por click:</span>
+                                <span id="cookies-per-click-stat" class="stat-value">1</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Galletas por segundo:</span>
+                                <span id="cookies-per-second-stat" class="stat-value">0</span>
+                            </div>
+                        </div>
+
+                        <div class="stats-group">
+                            <h3>Edificios</h3>
+                            <div id="buildings-stats"></div>
+                        </div>
+
+                        <div class="stats-group">
+                            <h3>Logros</h3>
+                            <div class="stat-row">
+                                <span class="stat-label">Logros desbloqueados:</span>
+                                <span id="achievements-unlocked-stat" class="stat-value">0/0</span>
+                            </div>
+                            <div id="achievements-list" class="achievements-grid"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Menú de Información -->
+                <div id="info-menu" class="menu-panel hidden">
+                    <div class="menu-header">
+                        <h2>Información</h2>
+                        <button class="close-btn">×</button>
+                    </div>
+                    <div class="menu-content">
+                        <div class="info-section">
+                            <h3>Versión</h3>
+                            <p>Cookie Clicker Clone v1.1.0 <br> todos los derechos reservados a orteil</p>
+                        </div>
+                        
+                        <div class="info-section">
+                            <h3>Registro de Cambios</h3>
+                            <div class="changelog">
+                                <div class="version-entry">
+                                    <h4>v1.1.0 - Actualización Mayor</h4>
+                                    <ul>
+                                        <li>Sistema de prestigio con Chips Celestiales</li>
+                                        <li>Nuevos edificios añadidos:
+                                            <ul>
+                                                <li>Nave Espacial</li>
+                                                <li>Laboratorio de Alquimia</li>
+                                                <li>Portal</li>
+                                                <li>Máquina del Tiempo</li>
+                                                <li>Condensador Antimaterial</li>
+                                                <li>Prisma</li>
+                                                <li>Motor de Galletas</li>
+                                                <li>Fractal</li>
+                                            </ul>
+                                        </li>
+                                        <li>Nuevas mejoras para cada edificio</li>
+                                        <li>Sistema de ascensión con multiplicadores permanentes</li>
+                                        <li>Menú de legado mejorado</li>
+                                        <li>Nuevos logros para los edificios</li>
+                                    </ul>
+                                </div>
+
+                                <div class="version-entry">
+                                    <h4>v1.0.0 - Lanzamiento Inicial</h4>
+                                    <ul>
+                                        <li>Sistema base de clicker con galletas</li>
+                                        <li>8 tipos diferentes de edificios</li>
+                                        <li>Sistema de logros</li>
+                                        <li>Sistema de mejoras para edificios</li>
+                                        <li>Multiplicador temporal aleatorio</li>
+                                        <li>Ticker de noticias con animaciones</li>
+                                        <li>Guardado automático y manual</li>
+                                        <li>Temas claro y oscuro</li>
+                                        <li>Menú de estadísticas detallado</li>
+                                        <li>Sistema de opciones y configuración</li>
+                                        <li>Nombre personalizable de la confitería</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>Créditos</h3>
+                            <div class="credits">
+                                <p><strong>Desarrollado por:</strong> Alejandro Bravo Lingyte</p>
+                                <p><strong>Testeado por:</strong> Alejandro Bravo Lingyte</p>
+                                
+                                <p><strong>Inspirado en:</strong> Cookie Clicker de Orteil</p>
+                                <p><strong>Agradecimientos especiales:</strong></p>
+                                <ul>
+                                    <li>A la comunidad de jugadores</li>
+                                    <li>A todos los beta testers</li>
+                                    <li>A todos los que me apoyaron en mis estudios, gracias</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>Contacto</h3>
+                            <p>¿Encontraste un bug? ¿Tienes una sugerencia?</p>
+                            <p>Contáctanos en: <a href="mailto:alejandrobravolingyte@gmail.com">alejandrobravolingyte@gmail.com</a></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Menú de Legado -->
+                <div id="legacy-menu" class="menu-panel hidden">
+                    <div class="menu-header">
+                        <h2>Legado</h2>
+                        <button class="close-btn">×</button>
+                    </div>
+                    <div class="menu-content">
+                        <div class="legacy-section">
+                            <h3>Ascensión</h3>
+                            <div class="legacy-stats">
+                                <div class="stat-row">
+                                    <span class="stat-label">Chips Celestiales actuales:</span>
+                                    <span id="current-chips" class="stat-value">0</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Multiplicador actual:</span>
+                                    <span id="current-multiplier" class="stat-value">+0%</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Chips al ascender:</span>
+                                    <span id="prestige-chips" class="stat-value">0</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Nuevo multiplicador:</span>
+                                    <span id="new-multiplier" class="stat-value">+0%</span>
+                                </div>
+                            </div>
+                            
+                            <div class="legacy-info">
+                                <p>Al ascender:</p>
+                                <ul>
+                                    <li>Perderás todas tus galletas y edificios</li>
+                                    <li>Obtendrás chips celestiales basados en tus galletas totales</li>
+                                    <li>Cada chip celestial te da un +2% de producción permanente</li>
+                                    <li>Necesitas al menos 1 billón de galletas para ascender</li>
+                                </ul>
+                            </div>
+
+                            <button id="ascend-button" class="special-btn" onclick="ascend()" disabled>
+                                Ascender
+                                <div class="tooltip">
+                                    Necesitas al menos 1 billón de galletas para ascender
+                                </div>
+                            </button>
+                        </div>
+
+                        <div class="legacy-section">
+                            <h3>Estadísticas de Legado</h3>
+                            <div class="legacy-stats">
+                                <div class="stat-row">
+                                    <span class="stat-label">Ascensiones totales:</span>
+                                    <span id="total-ascensions" class="stat-value">0</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Chips celestiales totales:</span>
+                                    <span id="total-heavenly-chips" class="stat-value">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contenedor de edificios -->
+                <div class="buildings-container">
+                    <div id="cursor-container" class="building-container">
+                        <div class="building-header">
+                            <div class="building-title">Cursor 🖱️</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="cursorCanvas" width="400" height="48"></canvas>
+                    </div>
+                    
+                    <div id="grandma-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Abuelita 👵</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="grandmaCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="farm-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Granja 🌾</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="farmCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="mine-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Mina ⛏️</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="mineCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="factory-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Fábrica 🏭</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="factoryCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="bank-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Banco 🏦</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="bankCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="temple-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Templo 🏛️</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="templeCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="wizard-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Torre de Magos 🧙‍♂️</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="wizardCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="shipment-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Nave Espacial 🚀</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="shipmentCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="alchemy-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Laboratorio de Alquimia ⚗️</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="alchemyCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="portal-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Portal 🌀</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="portalCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="timeMachine-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Máquina del Tiempo ⌛</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="timeMachineCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="antimatter-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Condensador Antimaterial ⚛️</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="antimatterCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="prism-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Prisma 🔮</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="prismCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="engine-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Motor de Galletas 🔧</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="engineCanvas" width="400" height="48"></canvas>
+                    </div>
+
+                    <div id="fractal-container" class="building-container hidden">
+                        <div class="building-header">
+                            <div class="building-title">Fractal 💫</div>
+                            <div class="building-stats">
+                                <span class="building-level">Nivel 0</span>
+                                <span class="building-count">0</span>
+                                <span class="building-production">0/s</span>
+                            </div>
+                            <button class="building-mute">🔊</button>
+                        </div>
+                        <canvas class="rowCanvas" id="fractalCanvas" width="400" height="48"></canvas>
+                    </div>
+                </div>
+
+                <!-- Contenedor de logros -->
+                <div class="achievements">
+                    <h2>Logros</h2>
+                    <div id="achievements-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tienda (derecha) -->
+        <div class="shop">
+            <div class="shop-header">
+                <div class="shop-controls">
+                    <button class="buy-amount active" onclick="buyAmount(1)">Comprar: 1</button>
+                    <button class="buy-amount" onclick="buyAmount(10)">10</button>
+                    <button class="buy-amount" onclick="buyAmount(50)">50</button>
+                    <button class="buy-amount" onclick="buyAmount(100)">100</button>
+                </div>
+                <div class="shop-tabs">
+                    <button class="tab-btn active" onclick="switchTab('buildings')">Edificios</button>
+                    <button class="tab-btn" onclick="switchTab('upgrades')">Mejoras</button>
+                </div>
+            </div>
+
+            <!-- Pestaña de edificios -->
+            <div id="buildings-tab" class="tab-content active">
+                <!-- Cursor -->
+                <div class="upgrade" id="cursor">
+                    <div class="upgrade-icon">🖱️</div>
+                    <div class="upgrade-info">
+                        <h3>Cursor</h3>
+                        <p class="description">Autoclicks una vez por segundo.</p>
+                        <div class="upgrade-stats">
+                            <span class="cost">Costo: <span id="cursor-cost">15</span></span>
+                            <span class="count">Tienes: <span id="cursor-count">0</span></span>
+                        </div>
+                    </div>
+                    <button class="buy-button" onclick="buyUpgrade('cursor')">Comprar</button>
+                </div>
+
+                <!-- Abuela -->
+                <div class="upgrade locked" id="grandma">
+                    <div class="upgrade-icon">👵</div>
+                    <div class="upgrade-info">
+                        <h3>Abuela</h3>
+                        <p class="description">Una abuela amable para hornear más galletas.</p>
+                        <div class="upgrade-stats">
+                            <span class="cost">Costo: <span id="grandma-cost">100</span></span>
+                            <span class="count">Tienes: <span id="grandma-count">0</span></span>
+                        </div>
+                    </div>
+                    <button class="buy-button" onclick="buyUpgrade('grandma')">Comprar</button>
+                </div>
+
+                <!-- Granja -->
+                <div class="upgrade locked" id="farm">
+                    <div class="upgrade-icon">🌾</div>
+                    <div class="upgrade-info">
+                        <h3>Granja</h3>
+                        <p class="description">Cultiva galletas frescas.</p>
+                        <div class="upgrade-stats">
+                            <span class="cost">Costo: <span id="farm-cost">1100</span></span>
+                            <span class="count">Tienes: <span id="farm-count">0</span></span>
+                        </div>
+                    </div>
+                    <button class="buy-button" onclick="buyUpgrade('farm')">Comprar</button>
+                </div>
+
+                <!-- Mina -->
+                <div class="upgrade locked" id="mine">
+                    <div class="upgrade-icon">⛏️</div>
+                    <div class="upgrade-info">
+                        <h3>Mina</h3>
+                        <p class="description">Extrae galletas del suelo.</p>
+                        <div class="upgrade-stats">
+                            <span class="cost">Costo: <span id="mine-cost">12000</span></span>
+                            <span class="count">Tienes: <span id="mine-count">0</span></span>
+                        </div>
+                    </div>
+                    <button class="buy-button" onclick="buyUpgrade('mine')">Comprar</button>
+                </div>
+
+                <!-- Fábrica -->
+                <div class="upgrade locked" id="factory">
+                    <div class="upgrade-icon">🏭</div>
+                    <div class="upgrade-info">
+                        <h3>Fábrica</h3>
+                        <p class="description">Produce galletas en masa.</p>
+                        <div class="upgrade-stats">
+                            <span class="cost">Costo: <span id="factory-cost">130000</span></span>
+                            <span class="count">Tienes: <span id="factory-count">0</span></span>
+                        </div>
+                    </div>
+                    <button class="buy-button" onclick="buyUpgrade('factory')">Comprar</button>
+                </div>
+
+                <!-- Banco -->
+                <div class="upgrade locked" id="bank">
+                    <div class="upgrade-icon">🏦</div>
+                    <div class="upgrade-info">
+                        <h3>Banco</h3>
+                        <p class="description">Genera galletas a partir de intereses.</p>
+                        <div class="upgrade-stats">
+                            <span class="cost">Costo: <span id="bank-cost">1400000</span></span>
+                            <span class="count">Tienes: <span id="bank-count">0</span></span>
+                        </div>
+                    </div>
+                    <button class="buy-button" onclick="buyUpgrade('bank')">Comprar</button>
+                </div>
+
+                <!-- Templo -->
+                <div class="upgrade locked" id="temple">
+                    <div class="upgrade-icon">🏛️</div>
+                    <div class="upgrade-info">
+                        <h3>Templo</h3>
+                        <p class="description">Reza por más galletas divinas.</p>
+                        <div class="upgrade-stats">
+                            <span class="cost">Costo: <span id="temple-cost">20000000</span></span>
+                            <span class="count">Tienes: <span id="temple-count">0</span></span>
+                        </div>
+                    </div>
+                    <button class="buy-button" onclick="buyUpgrade('temple')">Comprar</button>
+                </div>
+
+                <!-- Torre de Magos -->
+                <div class="upgrade locked" id="wizard">
+                    <div class="upgrade-icon">🧙‍♂️</div>
+                    <div class="upgrade-info">
+                        <h3>Torre de Magos</h3>
+                        <p class="description">Conjura galletas mágicas.</p>
+                        <div class="upgrade-stats">
+                            <span class="cost">Costo: <span id="wizard-cost">330000000</span></span>
+                            <span class="count">Tienes: <span id="wizard-count">0</span></span>
+                        </div>
+                    </div>
+                    <button class="buy-button" onclick="buyUpgrade('wizard')">Comprar</button>
+                </div>
+            </div>
+
+            <!-- Pestaña de mejoras -->
+            <div id="upgrades-tab" class="tab-content">
+                <!-- Mejoras de cursor -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Cursor</h3>
+                    <div class="upgrade locked" id="cursor-upgrade-1">
+                        <div class="upgrade-icon">🖱️</div>
+                        <div class="upgrade-info">
+                            <h4>Primera Mejora</h4>
+                            <p class="description">¿has comprado primero esta verdad?</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 1000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('cursor', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="cursor-upgrade-2">
+                        <div class="upgrade-icon">🖱️</div>
+                        <div class="upgrade-info">
+                            <h4>¿Quieres más cursores?</h4>
+                            <p class="description">¿Pero si quieres más cursores?</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 5000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('cursor', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="cursor-upgrade-3">
+                        <div class="upgrade-icon">🖱️</div>
+                        <div class="upgrade-info">
+                            <h4>Dios del Cursor</h4>
+                            <p class="description">No hago ninguna broma aqui, los cursores producen el cuádruple</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 50000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('cursor', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de abuelita -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Abuelita</h3>
+                    <div class="upgrade locked" id="grandma-upgrade-1">
+                        <div class="upgrade-icon">👵</div>
+                        <div class="upgrade-info">
+                            <h4>Guantes de Cocina</h4>
+                            <p class="description">No me gusta cocinar, pero si me gusta comer galletas</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 5000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('grandma', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="grandma-upgrade-2">
+                        <div class="upgrade-icon">👵</div>
+                        <div class="upgrade-info">
+                            <h4>Recetas Secretas</h4>
+                            <p class="description">Uhm no plankton, no robarás la receta de las galletas de mi abuela</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 25000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('grandma', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="grandma-upgrade-3">
+                        <div class="upgrade-icon">👵</div>
+                        <div class="upgrade-info">
+                            <h4>Sabiduría Ancestral</h4>
+                            <p class="description">Tu abuela ha leído un libro, cosa que deberias hacer también</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 100000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('grandma', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de granja -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Granja</h3>
+                    <div class="upgrade locked" id="farm-upgrade-1">
+                        <div class="upgrade-icon">🌾</div>
+                        <div class="upgrade-info">
+                            <h4>Fertilizante Mágico</h4>
+                            <p class="description">¡Dime que es natural!</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 11000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('farm', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="farm-upgrade-2">
+                        <div class="upgrade-icon">🌾</div>
+                        <div class="upgrade-info">
+                            <h4>Riego Automático</h4>
+                            <p class="description">¡Ojo, el agua está cara!</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 55000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('farm', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="farm-upgrade-3">
+                        <div class="upgrade-icon">🌾</div>
+                        <div class="upgrade-info">
+                            <h4>Invernaderos Avanzados</h4>
+                            <p class="description">Pagas a los que trabajan aquí, ¿no?</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 275000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('farm', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de mina -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Mina</h3>
+                    <div class="upgrade locked" id="mine-upgrade-1">
+                        <div class="upgrade-icon">⛏️</div>
+                        <div class="upgrade-info">
+                            <h4>Picos de Diamante</h4>
+                            <p class="description">¿entendiste la referencia?</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 120000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('mine', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="mine-upgrade-2">
+                        <div class="upgrade-icon">⛏️</div>
+                        <div class="upgrade-info">
+                            <h4>Excavadoras Automáticas</h4>
+                            <p class="description">Wow, no me lo imaginaba</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 600000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('mine', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="mine-upgrade-3">
+                        <div class="upgrade-icon">⛏️</div>
+                        <div class="upgrade-info">
+                            <h4>Tecnología Láser</h4>
+                            <p class="description">¡Oh no! darth vader nos ataca!</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 3000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('mine', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de fábrica -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Fábrica</h3>
+                    <div class="upgrade locked" id="factory-upgrade-1">
+                        <div class="upgrade-icon">🏭</div>
+                        <div class="upgrade-info">
+                            <h4>Línea de Producción</h4>
+                            <p class="description">No lavarás dinero con la fábrica, ¿no?</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 1300000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('factory', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="factory-upgrade-2">
+                        <div class="upgrade-icon">🏭</div>
+                        <div class="upgrade-info">
+                            <h4>Automatización Avanzada</h4>
+                            <p class="description">Woah, cuanta tecnología</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 6500000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('factory', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="factory-upgrade-3">
+                        <div class="upgrade-icon">🏭</div>
+                        <div class="upgrade-info">
+                            <h4>IA Industrial</h4>
+                            <p class="description">ChatGPT, no te rebeles</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 32500000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('factory', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de banco -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Banco</h3>
+                    <div class="upgrade locked" id="bank-upgrade-1">
+                        <div class="upgrade-icon">🏦</div>
+                        <div class="upgrade-info">
+                            <h4>Inversiones Seguras</h4>
+                            <p class="description">¿qué tan seguro es esto?</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 14000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('bank', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="bank-upgrade-2">
+                        <div class="upgrade-icon">🏦</div>
+                        <div class="upgrade-info">
+                            <h4>Mercado de Valores</h4>
+                            <p class="description">Ojo que no pase lo del 29</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 70000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('bank', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="bank-upgrade-3">
+                        <div class="upgrade-icon">🏦</div>
+                        <div class="upgrade-info">
+                            <h4>Criptomonedas</h4>
+                            <p class="description">Hazme un favor y no compres criptomonedas</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 350000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('bank', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de templo -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Templo</h3>
+                    <div class="upgrade locked" id="temple-upgrade-1">
+                        <div class="upgrade-icon">🏛️</div>
+                        <div class="upgrade-info">
+                            <h4>Ofrendas Sagradas</h4>
+                            <p class="description">No sé, suspendí religión</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 200000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('temple', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="temple-upgrade-2">
+                        <div class="upgrade-icon">🏛️</div>
+                        <div class="upgrade-info">
+                            <h4>Rituales Ancestrales</h4>
+                            <p class="description">No mataremos ningún bebé, ¿no?</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 1000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('temple', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="temple-upgrade-3">
+                        <div class="upgrade-icon">🏛️</div>
+                        <div class="upgrade-info">
+                            <h4>Bendición Divina</h4>
+                            <p class="description">Woah, dios me quiere</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 5000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('temple', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de torre de magos -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Torre de Magos</h3>
+                    <div class="upgrade locked" id="wizard-upgrade-1">
+                        <div class="upgrade-icon">🧙‍♂️</div>
+                        <div class="upgrade-info">
+                            <h4>Varitas Mejoradas</h4>
+                            <p class="description">Cuidado con Voldemort, o no se, nunca ví harry potter</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 3300000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('wizard', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="wizard-upgrade-2">
+                        <div class="upgrade-icon">🧙‍♂️</div>
+                        <div class="upgrade-info">
+                            <h4>Grimorio Antiguo</h4>
+                            <p class="description">¿qué es un grimorio?</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 16500000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('wizard', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="wizard-upgrade-3">
+                        <div class="upgrade-icon">🧙‍♂️</div>
+                        <div class="upgrade-info">
+                            <h4>Poder Arcano</h4>
+                            <p class="description">Si has llegado hasta aquí, es imposible que tengas novia</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 82500000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('wizard', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de Nave Espacial -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Nave Espacial</h3>
+                    <div class="upgrade locked" id="shipment-upgrade-1">
+                        <div class="upgrade-icon">🚀</div>
+                        <div class="upgrade-info">
+                            <h4>Propulsores Mejorados</h4>
+                            <p class="description">¡A velocidad luz!</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 51000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('shipment', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="shipment-upgrade-2">
+                        <div class="upgrade-icon">🚀</div>
+                        <div class="upgrade-info">
+                            <h4>Combustible de Galletas</h4>
+                            <p class="description">Energía limpia y deliciosa</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 255000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('shipment', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="shipment-upgrade-3">
+                        <div class="upgrade-icon">🚀</div>
+                        <div class="upgrade-info">
+                            <h4>Tecnología Alienígena</h4>
+                            <p class="description">Los extraterrestres aman las galletas</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 1275000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('shipment', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de Laboratorio de Alquimia -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Laboratorio de Alquimia</h3>
+                    <div class="upgrade locked" id="alchemy-upgrade-1">
+                        <div class="upgrade-icon">⚗️</div>
+                        <div class="upgrade-info">
+                            <h4>Elixir de Galletas</h4>
+                            <p class="description">¡No lo bebas!</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 750000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('alchemy', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="alchemy-upgrade-2">
+                        <div class="upgrade-icon">⚗️</div>
+                        <div class="upgrade-info">
+                            <h4>Transmutación Perfecta</h4>
+                            <p class="description">El secreto está en la masa</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 3750000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('alchemy', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="alchemy-upgrade-3">
+                        <div class="upgrade-icon">⚗️</div>
+                        <div class="upgrade-info">
+                            <h4>Piedra Filosofal</h4>
+                            <p class="description">Convierte el plomo en galletas</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 18750000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('alchemy', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de Portal -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Portal</h3>
+                    <div class="upgrade locked" id="portal-upgrade-1">
+                        <div class="upgrade-icon">🌀</div>
+                        <div class="upgrade-info">
+                            <h4>Estabilizador Dimensional</h4>
+                            <p class="description">Para que las galletas no se pierdan en el vacío</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 10000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('portal', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="portal-upgrade-2">
+                        <div class="upgrade-icon">🌀</div>
+                        <div class="upgrade-info">
+                            <h4>Túnel Espaciotemporal</h4>
+                            <p class="description">Conecta directamente con el estómago</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 50000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('portal', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="portal-upgrade-3">
+                        <div class="upgrade-icon">🌀</div>
+                        <div class="upgrade-info">
+                            <h4>Realidad Alternativa</h4>
+                            <p class="description">Donde todo es galleta</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 250000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('portal', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de Máquina del Tiempo -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Máquina del Tiempo</h3>
+                    <div class="upgrade locked" id="timeMachine-upgrade-1">
+                        <div class="upgrade-icon">⌛</div>
+                        <div class="upgrade-info">
+                            <h4>Flujo Temporal</h4>
+                            <p class="description">Las galletas del pasado saben mejor</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 140000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('timeMachine', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="timeMachine-upgrade-2">
+                        <div class="upgrade-icon">⌛</div>
+                        <div class="upgrade-info">
+                            <h4>Paradoja Controlada</h4>
+                            <p class="description">¿Y si comes una galleta antes de hornearla?</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 700000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('timeMachine', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="timeMachine-upgrade-3">
+                        <div class="upgrade-icon">⌛</div>
+                        <div class="upgrade-info">
+                            <h4>Bucle Temporal</h4>
+                            <p class="description">Galletas infinitas en tiempo finito</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 3500000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('timeMachine', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de Condensador Antimaterial -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Condensador Antimaterial</h3>
+                    <div class="upgrade locked" id="antimatter-upgrade-1">
+                        <div class="upgrade-icon">⚛️</div>
+                        <div class="upgrade-info">
+                            <h4>Compresión Cuántica</h4>
+                            <p class="description">Galletas en estado superpuesto</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 1700000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('antimatter', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="antimatter-upgrade-2">
+                        <div class="upgrade-icon">⚛️</div>
+                        <div class="upgrade-info">
+                            <h4>Fluctuación del Vacío</h4>
+                            <p class="description">Galletas que aparecen de la nada</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 8500000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('antimatter', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="antimatter-upgrade-3">
+                        <div class="upgrade-icon">⚛️</div>
+                        <div class="upgrade-info">
+                            <h4>Colapso del Universo</h4>
+                            <p class="description">¡Ups!</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 42500000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('antimatter', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de Prisma -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Prisma</h3>
+                    <div class="upgrade locked" id="prism-upgrade-1">
+                        <div class="upgrade-icon">🔮</div>
+                        <div class="upgrade-info">
+                            <h4>Refracción Dulce</h4>
+                            <p class="description">Convierte la luz en azúcar</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 21000000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('prism', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="prism-upgrade-2">
+                        <div class="upgrade-icon">🔮</div>
+                        <div class="upgrade-info">
+                            <h4>Fotosíntesis de Galletas</h4>
+                            <p class="description">La ciencia ha ido demasiado lejos</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 105000000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('prism', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="prism-upgrade-3">
+                        <div class="upgrade-icon">🔮</div>
+                        <div class="upgrade-info">
+                            <h4>Espectro Completo</h4>
+                            <p class="description">Galletas de todos los colores</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 525000000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('prism', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de Motor de Galletas -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Motor de Galletas</h3>
+                    <div class="upgrade locked" id="engine-upgrade-1">
+                        <div class="upgrade-icon">⚙️</div>
+                        <div class="upgrade-info">
+                            <h4>Turbocompresor</h4>
+                            <p class="description">¡Más potencia!</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 260000000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('engine', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="engine-upgrade-2">
+                        <div class="upgrade-icon">⚙️</div>
+                        <div class="upgrade-info">
+                            <h4>Inyección Directa</h4>
+                            <p class="description">Directo al paladar</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 1300000000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('engine', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="engine-upgrade-3">
+                        <div class="upgrade-icon">⚙️</div>
+                        <div class="upgrade-info">
+                            <h4>Fusión en Frío</h4>
+                            <p class="description">Energía limpia y deliciosa</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 6500000000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('engine', 3)">Comprar</button>
+                    </div>
+                </div>
+
+                <!-- Mejoras de Fractal -->
+                <div class="upgrade-category">
+                    <h3>Mejoras de Fractal</h3>
+                    <div class="upgrade locked" id="fractal-upgrade-1">
+                        <div class="upgrade-icon">🌌</div>
+                        <div class="upgrade-info">
+                            <h4>Autosimilitud</h4>
+                            <p class="description">Galletas dentro de galletas dentro de galletas...</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 3100000000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('fractal', 1)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="fractal-upgrade-2">
+                        <div class="upgrade-icon">🌌</div>
+                        <div class="upgrade-info">
+                            <h4>Dimensión Fractal</h4>
+                            <p class="description">Matemáticas deliciosas</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 15500000000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('fractal', 2)">Comprar</button>
+                    </div>
+                    <div class="upgrade locked" id="fractal-upgrade-3">
+                        <div class="upgrade-icon">🌌</div>
+                        <div class="upgrade-info">
+                            <h4>Conjunto de Mandelbrot</h4>
+                            <p class="description">El infinito nunca supo tan bien</p>
+                            <div class="upgrade-stats">
+                                <span class="cost">Costo: 77500000000000000000</span>
+                            </div>
+                        </div>
+                        <button class="buy-button" onclick="buyBuildingUpgrade('fractal', 3)">Comprar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
